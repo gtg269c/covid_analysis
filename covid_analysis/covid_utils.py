@@ -11,12 +11,21 @@ import sys
 import os
 import pandas as pd
 import glob
+import logging
 
 ## read in arguments
 dir_input = sys.argv[1]
 file_pattern = sys.argv[2]
 
 print(f'{sys.argv}')
+
+# Add logging feature to capture daily changes
+logging.basicConfig(filename="covid_compile.log",
+                    format='%(asctime)s %(message)s',
+                    filemode='w', level=logging.DEBUG)
+
+# Creating an object
+logger = logging.getLogger()
 
 
 def read_daily_reports(dir_in, file_pattern):
@@ -43,7 +52,7 @@ def main():
     # read dialy reports
 
     combine_df = read_daily_reports(dir_input, file_pattern)
-    print(f'Dim of combine df: {combine_df.shape}')
+    logger.info(f'Dim of combine df: {str(combine_df.shape)}')
     print(combine_df.head())
 
     list_country_summ = ['Country/Region', 'Province/State']
