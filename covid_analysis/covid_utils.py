@@ -19,16 +19,21 @@ file_pattern = sys.argv[2]
 
 print(f'{sys.argv}')
 
-# Add logging feature to capture daily changes
+# Add logging feature to capture daily changes and appends 'a' to the log file
 logging.basicConfig(filename="covid_compile.log",
                     format='%(asctime)s %(message)s',
-                    filemode='w', level=logging.DEBUG)
+                    filemode='a', level=logging.DEBUG)
 
 # Creating an object
 logger = logging.getLogger()
 
 
-def read_daily_reports(dir_in, file_pattern):
+def rename_df_col(input_df, rename_col):
+    input_df_new = input_df.rename(columns=rename_col)
+    return(input_df_new)
+
+
+def read_daily_reports(dir_in, file_pattern, rename_col):
     list_file = glob.glob(dir_in + "/" + file_pattern)
     print(f'Total daily reports: {len(list_file)}')
 
@@ -36,6 +41,7 @@ def read_daily_reports(dir_in, file_pattern):
     list_df = list()
     for file in list_file:
         temp_df = pd.read_csv(file)
+        temp_df = rename_df_col(temp_df, rename_col)
         list_df.append(temp_df)
 
     # concatinate the data
@@ -43,8 +49,9 @@ def read_daily_reports(dir_in, file_pattern):
     return(combine_df)
 
 
-def summarize_by_county(input_df, list_fields):
-    summary_df = input_df.groupby(list_fields).sum()
+def summarize_by_county(input_df, list_groups, list_display):
+    list_select = list_groups + list_display
+    summary_df = input_df[list_select].groupby(list_groups).sum()
     return(summary_df)
 
 
@@ -56,7 +63,9 @@ def main():
     print(combine_df.head())
 
     list_country_summ = ['Country/Region', 'Province/State']
-    country_summ = summarize_by_county(combine_df, list_country_summ)
+    list_display = []
+    country_summ = summarize_by_county(
+        combine_df, list_country_summ, list_display=list_display)
     print(country_summ.head())
 
 
