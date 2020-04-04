@@ -29,11 +29,24 @@ logger = logging.getLogger()
 
 
 def rename_df_col(input_df, rename_col):
+    """function to rename columns
+
+    Arguments:
+        input_df {dataframe} -- input pandas dataframe
+        rename_col {dict} -- dictionary of column name to be renamed
+    """
     input_df_new = input_df.rename(columns=rename_col)
     return(input_df_new)
 
 
 def read_daily_reports(dir_in, file_pattern, rename_col):
+    """function to read dialy reports and compile
+
+    Arguments:
+        dir_in {str} -- path to input file location
+        file_pattern {str} -- pattern of input file names
+        rename_col {dict} -- dictionary of column names to be renamed
+    """
     list_file = glob.glob(dir_in + "/" + file_pattern)
     print(f'Total daily reports: {len(list_file)}')
 
@@ -50,6 +63,13 @@ def read_daily_reports(dir_in, file_pattern, rename_col):
 
 
 def summarize_by_county(input_df, list_groups, list_display):
+    """function to summarize
+
+    Arguments:
+        input_df {dataframe} -- combined input dataframe
+        list_groups {list} -- list of columns for groupby
+        list_display {list} -- columns to display after groupby
+    """
     list_select = list_groups + list_display
     summary_df = input_df[list_select].groupby(list_groups).sum()
     return(summary_df)
