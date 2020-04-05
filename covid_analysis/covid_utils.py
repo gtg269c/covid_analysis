@@ -77,12 +77,14 @@ def summarize_by_county(input_df, list_groups, list_display):
 
 def main():
     # read dialy reports
+    column_rename = {'Country/Region': 'Country_Region', 'Province/State': 'Province_State',
+                     'Last Update': 'Last_Update', 'Latitude': 'Lat', 'Longitude': 'Long_'}
 
-    combine_df = read_daily_reports(dir_input, file_pattern)
+    combine_df = read_daily_reports(dir_input, file_pattern, column_rename)
     logger.info(f'Dim of combine df: {str(combine_df.shape)}')
     print(combine_df.head())
 
-    list_country_summ = ['Country/Region', 'Province/State']
+    list_country_summ = ['Country_Region', 'Province_State']
     list_display = []
     country_summ = summarize_by_county(
         combine_df, list_country_summ, list_display=list_display)
